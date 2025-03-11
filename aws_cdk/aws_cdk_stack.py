@@ -2,10 +2,9 @@ from constructs import Construct
 from aws_cdk import (
     Duration,
     Stack,
-    aws_iam as iam,
     aws_sqs as sqs,
-    aws_sns as sns,
-    aws_sns_subscriptions as subs,
+    aws_lambda as lambda_,
+    aws_lambda_event_sources as lambda_event_sources
 )
 
 
@@ -14,13 +13,22 @@ class AwsCdkStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # Create our queue
         queue = sqs.Queue(
             self, "AwsCdkQueue",
             visibility_timeout=Duration.seconds(300),
         )
-
-        topic = sns.Topic(
-            self, "AwsCdkTopic"
+        
+        # Create our Lambda function
+        sns_lambda = lambda_.Function(
+            self, "AwsCdkLambda",
+            handler="lambda_handler.test_handler",
+            runtime = lambda_.Runtime.PYTHON_3_10,
+            source = lambda_.Code.from_asset("lambda")
         )
-
-        topic.add_subscription(subs.SqsSubscription(queue))
+        
+        # Create event source for Lambda function
+        sqs_event_source = lambda_event_sources.SqsEventSource(queue)
+        
+        # Add SQS event source to Lambda function
+        sns_lambda.add_event_source(sqs_event_source)
