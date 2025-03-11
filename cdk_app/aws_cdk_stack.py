@@ -1,12 +1,12 @@
 from constructs import Construct
 from aws_cdk import (
-    Duration,
     Stack,
+    Duration,
     aws_sqs as sqs,
     aws_lambda as lambda_,
-    aws_lambda_event_sources as lambda_event_sources
+    aws_lambda_event_sources as lambda_event_sources,
 )
-
+# ...
 
 class AwsCdkStack(Stack):
 
@@ -24,7 +24,7 @@ class AwsCdkStack(Stack):
             self, "AwsCdkLambda",
             handler="lambda_handler.test_handler",
             runtime = lambda_.Runtime.PYTHON_3_10,
-            source = lambda_.Code.from_asset("lambda")
+            code = lambda_.Code.from_asset("lambda")
         )
         
         # Create event source for Lambda function
