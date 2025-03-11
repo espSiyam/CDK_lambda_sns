@@ -20,7 +20,7 @@ class AwsCdkStack(Stack):
         )
         
         # Create our Lambda function
-        sns_lambda = lambda_.Function(
+        sqs_lambda = lambda_.Function(
             self, "AwsCdkLambda",
             handler="lambda_handler.test_handler",
             runtime = lambda_.Runtime.PYTHON_3_10,
@@ -31,4 +31,4 @@ class AwsCdkStack(Stack):
         sqs_event_source = lambda_event_sources.SqsEventSource(queue)
         
         # Add SQS event source to Lambda function
-        sns_lambda.add_event_source(sqs_event_source)
+        sqs_lambda.add_event_source(sqs_event_source)
